@@ -285,7 +285,8 @@ server <- function(input, output, session) {
     #mirnadf<<-data.frame(ID=as.character(precsdf$ID), mature=as.character(matseqs),star=as.character(starseqs),"Loci"=paste(precsdf$seqid,":",precsdf$start,"-",precsdf$end,":",precsdf$strand, sep=''),precursor=as.character(precseqs),precseqs_extended=as.character(precseqs_extended) )
     colnames(precsdf) = c("seqid" ,"source", "type",   "start",  "end",    "score"  ,"strand", "phase"  ,"ID" )
     mirnadf<<-data.frame(ID=as.character(precsdf$ID), mature=as.character(matseqs),star=as.character(starseqs),"Loci"=paste(precsdf$seqid,":",precsdf$start,"-",precsdf$end,":",precsdf$strand, sep=''),precursor=as.character(precseqs),precseqs_extended=as.character(precseqs_extended) )
-    mirnadf_toshow1<-data.frame(ID=as.character(precsdf$ID), mature=as.character(matseqs),'length mature'=width(matseqs),star=as.character(starseqs),'length mature'=width(starseqs),"Loci"=paste(precsdf$seqid,":",precsdf$start,"-",precsdf$end,":",precsdf$strand, sep=''),precursor=as.character(precseqs),precseqs_extended=as.character(precseqs_extended) )
+    mirnadf_toshow1<<-data.frame(ID=as.character(precsdf$ID), mature=as.character(matseqs),"length 5p arm"=width(matseqs),star=as.character(starseqs),"length 3p arm"=width(starseqs),"Loci"=paste(precsdf$seqid,":",precsdf$start,"-",precsdf$end,":",precsdf$strand, sep=''),precursor=as.character(precseqs),precseqs_extended=as.character(precseqs_extended) )
+    colnames(mirnadf_toshow1) <- c( "ID","5p","length 5p arm","3p","length 3p arm","Loci" ,"precursor" ,"Extended_Precursor_sequence")
 
 
     if (input$matureorarm == "maturestar"){
@@ -354,7 +355,7 @@ server <- function(input, output, session) {
 
       #alignment <<- readGAlignments(".bam")
 
-       alignment <<- readGAlignments(values$bamfilepath)
+      alignment <<- readGAlignments(values$bamfilepath)
 
       incProgress(1/n, detail = "Loading bam")
 
@@ -509,7 +510,7 @@ server <- function(input, output, session) {
     values$successStepAdjust<-TRUE
   })# clos button expression PLOTS
 
-                                                                    #
+  #
   #################################
   ### Check secondary structure ###
   #################################
@@ -1200,11 +1201,11 @@ server <- function(input, output, session) {
         ## later I would add plants
 
 
-
+        print("HEi!!!\n\n")
         ###Lets adjust image parameters depending on length
         if(nchar(folded[1,]) > 180){
 
-          jpeg(filename = paste( "www/images/", mirnadf$ID[i],"_fold.jpg",sep=''),quality=100, width = 2000, height = 2000, units = "px",res =300 )
+          jpeg(filename = paste0( "www/images/", mirnadf$ID[i],"_fold.jpg",sep=''),quality=100, width = 2000, height = 2000, units = "px",res =300 )
           par(mar=c(0.1,0.1,0,0.1))
           RNAPlot(coord,hl=c(as.character(RNAString(DNAString(mirnadf$mature[i]))), as.character(RNAString(DNAString(mirnadf$star[i])))),#, main=mirnadf$ID[i]
                   seqcols=c(color_arm1,color_arm2),labTF=FALSE,
@@ -1212,7 +1213,7 @@ server <- function(input, output, session) {
                   dp=1, tsize=0.5)
           dev.off()
         }else if( nchar(folded[1,]) > 100){
-          jpeg(filename = paste( "www/images/", mirnadf$ID[i],"_fold.jpg",sep=''),quality=100, width = 2000, height = 2000, units = "px",res =300 )
+          jpeg(filename = paste0( "www/images/", mirnadf$ID[i],"_fold.jpg",sep=''),quality=100, width = 2000, height = 2000, units = "px",res =300 )
           par(mar=c(0.1,0.1,0,0.1))
           RNAPlot(coord,hl=c(as.character(RNAString(DNAString(mirnadf$mature[i]))), as.character(RNAString(DNAString(mirnadf$star[i])))),#, main=mirnadf$ID[i]
                   seqcols=c(color_arm1,color_arm2),labTF=FALSE,
@@ -1220,7 +1221,7 @@ server <- function(input, output, session) {
                   dp=1, tsize=0.8)
           dev.off()
         }else{
-          jpeg(filename = paste( "www/images/", mirnadf$ID[i],"_fold.jpg",sep=''),quality=100, width = 2000, height = 2000, units = "px",res =300 )
+          jpeg(filename = paste0( "www/images/", mirnadf$ID[i],"_fold.jpg",sep=''),quality=100, width = 2000, height = 2000, units = "px",res =300 )
           par(mar=c(0.1,0.1,0,0.1))
           RNAPlot(coord,hl=c(as.character(RNAString(DNAString(mirnadf$mature[i]))), as.character(RNAString(DNAString(mirnadf$star[i])))),#, main=mirnadf$ID[i]
                   seqcols=c(color_arm1,color_arm2),labTF=FALSE,
@@ -1231,9 +1232,6 @@ server <- function(input, output, session) {
         folded_globe [[i]] <- folded
 
         ##################I should use it##############################
-
-
-        incProgress(1/q, detail = paste("Prec", i, "of", q))
 
 
       }# close loop for each prec
@@ -1251,12 +1249,12 @@ server <- function(input, output, session) {
       print("Making dataframe animal")
       print(overhang_animal)
       print(overhang2_animal)
-      mirnadf_folding<-cbind(mirnadf,foldingFigs ,"pri-miRNA Cleavage"=overhang_animal[,1],"Loop Cleavage"=overhang2_animal[,1] )
+      mirnadf_folding<<-cbind(mirnadf,foldingFigs ,"pri-miRNA Cleavage"=overhang_animal[,1],"Loop Cleavage"=overhang2_animal[,1] )
       output$mirnaSeqswithplots <-  DT::renderDataTable({ mirnadf_folding[,c(1,2,3,7,8,9)]},  escape = FALSE )
       overhangs_score_animal<<- as.numeric(overhang_animal[,2])+as.numeric(overhang2_animal[,2] )
     }else{
       print("Making dataframe plant")
-      mirnadf_folding<-cbind(mirnadf,foldingFigs ,"pri-miRNA Cleavage"=overhang_plant[,1],"Loop Cleavage"=overhang2_plant[,1] )
+      mirnadf_folding<<-cbind(mirnadf,foldingFigs ,"pri-miRNA Cleavage"=overhang_plant[,1],"Loop Cleavage"=overhang2_plant[,1] )
       output$mirnaSeqswithplots <-  DT::renderDataTable({ mirnadf_folding[,c(1,2,3,7,8,9)]},  escape = FALSE )
       overhangs_score_plant<<- as.numeric(overhang_plant[,2])+as.numeric(overhang2_plant[,2] )
     }
@@ -1295,6 +1293,8 @@ server <- function(input, output, session) {
       ### Make it fast for trials
 
       matureCounts <- c()
+      counts5p <- c()
+      counts3p <- c()
       starCounts <- c()
       loopCounts <- c()
       loopReason <- rep(0, nrow(mirnadf))
@@ -1328,7 +1328,7 @@ server <- function(input, output, session) {
         toplot<-rbind(libs=t(selectedRange_coverage), expression=greybars)
 
 
-        png(filename = paste("www/plots/",mirname, ".png",sep=""),   width = 1200, height = 480)
+        png(filename = paste0("www/plots/",mirname, ".png",sep=""),   width = 1200, height = 480)
         par(mar=c(2,4.5,2,0))
         plot<-barplot(toplot, axes=TRUE, ylab="Number of Reads", main=mirname, col=c("blue4", "grey"), border=c("blue4","grey"),beside=T)
         # mtext(at = plot, text = seq,col="black", side = 1,  line = 0, cex=1)
@@ -1353,6 +1353,14 @@ server <- function(input, output, session) {
         ##############check the expression###################
         starReads <- mean(selectedRange_coverage[star_i:star_e])
         matureReads <- mean(selectedRange_coverage[matureseq_i:matureseq_e])
+
+        if (star_i < matureseq_i) {
+          read5p <- starReads
+          read3p <- matureReads
+        } else {
+          read5p <- matureReads
+          read3p <- starReads
+        }
 
         if (star_i >= matureseq_e) {
           loopReads <- mean(selectedRange_coverage[(matureseq_e+1 + 1):(star_i-3)])
@@ -1391,10 +1399,15 @@ server <- function(input, output, session) {
 
         }
 
+
+
         ## make sure mature reads is the largest!!!
         matureCounts[i] <- round(matureReads)
         starCounts[i] <- round(starReads)
         loopCounts[i] <- round(loopReads,2)
+
+        counts5p[i] <- round(read5p)
+        counts3p[i] <- round(read3p)
         ######check the mountain-like structure#########
 
         #########Give the score For expression############################
@@ -1406,8 +1419,8 @@ server <- function(input, output, session) {
             scoreExpression <- c(2.5)
           } else if (starReads > ExpLevel1 & matureReads > ExpLevel1) {
             scoreExpression <- c (2)
-          # } else if (starReads > ExpLevel1 & matureReads > ExpLevel2) {
-          #   scoreExpression <- c (2)
+            # } else if (starReads > ExpLevel1 & matureReads > ExpLevel2) {
+            #   scoreExpression <- c (2)
           } else {
             scoreExpression <- c(0)
           }
@@ -1440,11 +1453,11 @@ server <- function(input, output, session) {
 
           ## Check mountain-like structure
 
-            if ((checkMatureReadsLeft / matureReads < 0.9) | (checkStarReadsLeft / starReads < 0.9)) {
-              homology[i] = 1
-              scoreExpression = scoreExpression - 0.5
-              print("Penalty mountain-like expression 0.5")
-            }
+          if ((checkMatureReadsLeft / matureReads < 0.9) | (checkStarReadsLeft / starReads < 0.9)) {
+            homology[i] = 1
+            scoreExpression = scoreExpression - 0.5
+            print("Penalty mountain-like expression 0.5")
+          }
 
           ###check franking expression
           if (flankReadsLeft > flankReadsright) {
@@ -1503,8 +1516,11 @@ server <- function(input, output, session) {
       loopCounts <<- loopCounts
       starCounts <<- starCounts
       matureCounts <<- matureCounts
+      counts5p <<- counts5p
+      counts3p <<- counts3p
+
       ### Find whis is mature/star
-      counts_Table<<-data.frame(loopCounts, matureCounts,starCounts)
+      counts_Table<<-data.frame(loopCounts, counts5p,counts3p)
       colnames(counts_Table)<- c("Loop","Mature","Star")
 
       #################### if input data was 5p / 3p, check whch is the mature/star###
@@ -1519,11 +1535,12 @@ server <- function(input, output, session) {
       #################################################################################
       ExpressionPlot= paste("<img src=\"plots/",mirnadf$ID,".png\" width=\"1000\" height=\"600\"></img>", sep="")
       if (input$matureorarm == "maturestar"){ # if input data was mature/star
-        mirnadf_plots<-data.frame("ID"=mirnadf$ID,"Mature seq"=mirnadf$mature,"Star seq"=mirnadf$star, "Reads loop"=counts_Table$Loop, "Reads Mature"=counts_Table$Mature, "Reads Star"=counts_Table$Star)
+        mirnadf_plots<-data.frame("ID"=mirnadf$ID,"Mature seq"=mirnadf$mature,"Star seq"=mirnadf$star, "Reads loop"=counts_Table$Loop, "Mature arm"=counts_Table$Mature, "Reads Star"=counts_Table$Star)
         output$PLOTS <-  DT::renderDataTable({ mirnadf_plots},  escape = FALSE, selection = 'single' )
         ExpressionPlot<<-ExpressionPlot
       }else{# if was 5p 3p
-        mirnadf_plots<-data.frame("ID"=mirnadf$ID,"5P arm seq"=mirnadf$mature,"3P arm seq"=mirnadf$star, "Reads Mature"= maturesvector$matureis, "Reads loop"=counts_Table$Loop, "Reads 5P arm"=counts_Table$Mature, "Reads 3P arm "=counts_Table$Star)
+        mirnadf_plots<-data.frame("ID"=mirnadf$ID,"5P arm seq"=mirnadf$mature,"3P arm seq"=mirnadf$star, "Mature Arm"= maturesvector$matureis, "Reads loop"=counts_Table$Loop, "Mature arm"=counts_Table$Mature, "Reads Star"=counts_Table$Star)
+        colnames(mirnadf_plots) <- c("ID", "5P arm seq", "3P arm seq", "Mature arm", "Reads loop", "Reads 5P arm", "Reads 3P arm")
         output$PLOTS <-  DT::renderDataTable({ mirnadf_plots},  escape = FALSE, selection = 'single' )
         ExpressionPlot<<-ExpressionPlot
       }
@@ -1642,11 +1659,11 @@ server <- function(input, output, session) {
             if(length(toalignwhole)>5){## if there are between 6 and 20 identicals  (+ >20 similar)
               score2_animal<<-c(score2_animal,Score_conservation_6_20id20_Animal)
               score2_plant<<-c(score2_plant,Score_conservation_6_20id20_Plant)
-              conservationtype<<-c(conservationtype,"strong 6")
+              conservationtype<<-c(conservationtype,"strong")
             }else{
               score2_animal<<-c(score2_animal,Score_conservation_2_5id_Animal)###### if there are between 2-5 identicals (+ >20 similar)
               score2_plant<<-c(score2_plant,Score_conservation_2_5id_Plant)
-              conservationtype<<-c(conservationtype,"strong 4")
+              conservationtype<<-c(conservationtype,"strong")
 
             }
           }
@@ -1659,12 +1676,12 @@ server <- function(input, output, session) {
             if(length(toalignwhole)>5){## if there are between 6 and 20 identicals  (+ <20 similar)
               score2_animal<<-c(score2_animal, Score_conservation_6_20id_Animal)
               score2_plant<<-c(score2_plant, Score_conservation_6_20id_Plant)
-              conservationtype<<-c(conservationtype,"strong 5.8")
+              conservationtype<<-c(conservationtype,"strong")
 
             }else{
               score2_animal<<-c(score2_animal,Score_conservation_2_5id_Animal)###### if there are between 2-4 identicals (+ <20 similar)
               score2_plant<<-c(score2_plant,Score_conservation_2_5id_Plant)
-              conservationtype<<-c(conservationtype,"medium 4.8")
+              conservationtype<<-c(conservationtype,"medium")
             }
 
           }
@@ -1672,7 +1689,7 @@ server <- function(input, output, session) {
             toalign<-c(toalign,toalignwhole)
             score2_animal<<-c(score2_animal,Score_conservation_20id_Animal)######
             score2_plant<<-c(score2_plant,Score_conservation_20id_Plant)######
-            conservationtype<<-c(conservationtype,"very strong 6.5")
+            conservationtype<<-c(conservationtype,"very strong")
           }
 
         }else if(length(toalignseed)>1){#### if no identicals but some with same seed
@@ -1680,7 +1697,7 @@ server <- function(input, output, session) {
             toalign<-c(toalign,toalignseed)
             score2_animal<<-c(score2_animal,Score_conservation_0id_Animal)######
             score2_plant<<-c(score2_plant, Score_conservation_0id_Plant)######
-            conservationtype<<-c(conservationtype,"low 2")
+            conservationtype<<-c(conservationtype,"low")
 
 
           }
@@ -1688,7 +1705,7 @@ server <- function(input, output, session) {
             toalign<- c(toalign,toalignseed)###
             score2_animal<<-c(score2_animal,Score_conservation_0id20_Animal)######
             score2_plant<<-c(score2_plant,Score_conservation_0id20_Plant)######
-            conservationtype<<-c(conservationtype,"low 0.8")
+            conservationtype<<-c(conservationtype,"low")
 
 
           }
@@ -1702,7 +1719,7 @@ server <- function(input, output, session) {
         }else{ toreturn<-c(toreturn,"No")
         score2_animal<<-c(score2_animal,0)
         score2_plant<<-c(score2_plant,-2.5)
-        conservationtype<<-c(conservationtype,"none -2.5")
+        conservationtype<<-c(conservationtype,"none")
 
 
         }
@@ -1832,7 +1849,7 @@ server <- function(input, output, session) {
     ##### SET score threshold!
     #####
     ## pre-check some rows absed on their score
-    res$NewName<- paste0('<div class=\"form-group shiny-input-container\">\n  <input id=\"v1_1\" type=\"text\" class=\"form-control\" value=\"', mirnadf_integrated$ID,'">\n</div>')
+    res$NewName<- paste0('<div class=\"form-group shiny-input-container\">\n  <input id=\"v1_',1:length(mirnadf_integrated$ID),'\" type=\"text\" class=\"form-control\" value=\"', mirnadf_integrated$ID,'">\n</div>')
     res[res$Score>=scorethreshold,]$Filter<- gsub('\"checkbox\"/>\n', '\"checkbox\" checked=\"checked\"/>\n',  res[res$Score>=scorethreshold,]$Filter )
     ####
     res_globalcopie<<-res
@@ -1868,8 +1885,17 @@ server <- function(input, output, session) {
 
     # print the values of inputs
     shinyValue = function(id, len) {
+      print(input)
+      print('input[["v1_1"]]')
+      print(input[["v1_1"]])
+      print('input[["v1_2"]]')
+      print(input[["v1_2"]])
+      print('input[["v1_3"]]')
+      print(input[["v1_3"]])
       unlist(lapply(seq_len(len), function(i) {
         value = input[[paste0(id, i)]]
+        print(value)
+        print(paste("id ", id))
         if (is.null(value)) NA else value
       })) }
 
@@ -1972,29 +1998,29 @@ server <- function(input, output, session) {
         # Todownload<<-cbind(Selectiondatframe[Selectiondatframe$v2==TRUE,1],Todownload)
         # write.csv(Todownload, file, row.names = FALSE)
 
-         if (input$matureorarm == "maturestar"){ ## if input data has mature/star info
+        if (input$matureorarm == "maturestar"){ ## if input data has mature/star info
 
-            TodownloadMaturestar<<-mirnadf_integrated[Selectiondatframe$v2==TRUE,1:5]
-            TodownloadMaturestar<<-cbind(Selectiondatframe[Selectiondatframe$v2==TRUE,1],TodownloadMaturestar)
-            Todownloadasfasta<-paste0(">",Selectiondatframe$v1,"\n",TodownloadMaturestar[,3])
-           write(Todownloadasfasta, file )
+          TodownloadMaturestar<<-mirnadf_integrated[Selectiondatframe$v2==TRUE,1:5]
+          TodownloadMaturestar<<-cbind(Selectiondatframe[Selectiondatframe$v2==TRUE,1],TodownloadMaturestar)
+          Todownloadasfasta<-paste0(">",Selectiondatframe$v1,"\n",TodownloadMaturestar[,3])
+          write(Todownloadasfasta, file )
 
         }else{  ### if input was 5p / 3p
-            print("maturesvector")
-            print(maturesvector)
-            ## maturesvector$matureis
-            ### check if mature is 5p or 3p and return mature!
-            Todownload_0<<-cbind(mirnadf_integrated,Selectiondatframe, matureis=maturesvector$matureis )
-            print("Todownload_0")
-            print(Todownload_0)
-            Todownload_1<<-Todownload_0[Todownload_0$v2==TRUE,c(1:5,12,14 )]
-            print("Todownload_1")
-            print(Todownload_1)
-            Todownloadasfasta2<<- ifelse(Todownload_1$matureis=="5p", paste0(">",Todownload_1[,1],"\n",Todownload_1[,2]),  paste0(">",Todownload_1$v1,"\n",Todownload_1[,3]))
-            print("Todownloadasfasta2")
-            print(Todownloadasfasta2)
-            #Todownloadasfasta<-paste0(">",Todownload[,1],"\n",Todownload[,3])
-            write(Todownloadasfasta2, file )
+          print("maturesvector")
+          print(maturesvector)
+          ## maturesvector$matureis
+          ### check if mature is 5p or 3p and return mature!
+          Todownload_0<<-cbind(mirnadf_integrated,Selectiondatframe, matureis=maturesvector$matureis )
+          print("Todownload_0")
+          print(Todownload_0)
+          Todownload_1<<-Todownload_0[Todownload_0$v2==TRUE,c(1:5,12,14 )]
+          print("Todownload_1")
+          print(Todownload_1)
+          Todownloadasfasta2<<- ifelse(Todownload_1$matureis=="5p", paste0(">",Todownload_1[,1],"\n",Todownload_1[,2]),  paste0(">",Todownload_1$v1,"\n",Todownload_1[,3]))
+          print("Todownloadasfasta2")
+          print(Todownloadasfasta2)
+          #Todownloadasfasta<-paste0(">",Todownload[,1],"\n",Todownload[,3])
+          write(Todownloadasfasta2, file )
 
         }
       }#content end
@@ -2031,40 +2057,18 @@ server <- function(input, output, session) {
 
 
     observeEvent (input$report, {
-
-              ## first, get the pre-select  rows
-              originalstatus<- data.frame(v1 = res_globalcopie$Name ,
-                                          v2 = res_globalcopie$Score )
-              originalstatus$v2<-ifelse(originalstatus$v2>=scorethreshold, TRUE, FALSE )
-              originalstatus<<-originalstatus
-              Selectiondatframe<<-NULL
-              #T2nd we get the info o fthe items that user modified
-              Selectiondatframe<<- data.frame(v1 = shinyValue('v1_', nrow(mirnadf_integrated)),
-                                              v2 = shinyValue('v2_', nrow(mirnadf_integrated)))
-              Selectiondatframe$v1<-as.character(Selectiondatframe$v1)
-
-              # if not modified, has NA, and therfore we assign it the value of the orifinal pre-selection
-              for(i in 1:nrow(Selectiondatframe)){
-                if(is.na(Selectiondatframe[i,1])){
-                  Selectiondatframe[i,1]<-as.character(originalstatus[i,1])
-                }
-                if(is.na(Selectiondatframe[i,2])){
-                  Selectiondatframe[i,2]<-originalstatus[i,2]
-                }
-              }
-
-              ToReport<<-cbind(UserName=Selectiondatframe$v1,res_globalcopie)
-
       print("creating report")
       withProgress(message = 'Creating report...', value = 0, {
-        n <- length(as.character(ToReport$ID))
-        print("ToReport$ID")
-        print(ToReport$ID)
-        for (i in 1:nrow(ToReport)) {
-          print(ToReport[i,])
-          render("./Makereport.Rmd", output_file = paste0 ("reports/report_", ToReport[i,"ID"], ".pdf"),
-                 params = list(new_title = paste ("report of ", ToReport[i,])))
-          incProgress(1/n, detail = paste("report for", ToReport[i,"Name"]))
+        n <- length(as.character(res_globalcopie$ID))
+        print("res_globalcopie$ID")
+        print(res_globalcopie$ID)
+        for (i in as.character(res_globalcopie$ID)) {
+          print(i)
+          rmarkdown::render("./Makereport.Rmd", encoding="UTF-8",
+                            output_dir="./reports/",
+                            output_file = paste0 ("./reports/report_", as.character(ToReport[i,"Name"]), ".pdf"),
+                            params = list(new_title = paste ("report of ", ToReport[i,])))
+          incProgress(1/n, detail = paste("report for", as.character(ToReport[i,"Name"])))
 
         }
       })
@@ -2130,10 +2134,4 @@ server <- function(input, output, session) {
   })# close button integration
 
 }#close server
-
-
-
-
-
-
 

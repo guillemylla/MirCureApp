@@ -1,8 +1,12 @@
+---
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
 # MirCure: A tool for quality control, filter, and curation of microRNAs of animals and plants 
 
-- Guillem Ylla
-- Tianyuan Liu
-- Ana Conesa
+
 
 ## Installation
 
