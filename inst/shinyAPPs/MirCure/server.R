@@ -2134,4 +2134,3 @@ server <- function(input, output, session) {
   })# close button integration
 
 }#close server
-
