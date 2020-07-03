@@ -4,44 +4,32 @@ output:
   word_document: default
   html_document: default
 ---
+
 # MirCure: A tool for quality control, filter, and curation of microRNAs of animals and plants 
 
+MirCure is a computational application to assist on filtering and curating microRNA annotations obtained from databases or de novo miRNA annotation tools.
 
 
-## Installation
+## New repository
 
- - MirCure requires 2 external dependencies.
-   - [ViennaRNA package](https://www.tbi.univie.ac.at/RNA/#download).
-   - And [LATEX](https://www.latex-project.org/get/) for generating df reports (optional). 
+MirCure is officially mentained at: https://github.com/ConesaLab/MirCure
 
 
-
-- Install MirCure as R package. 
+## Run MirCure from Docker
 
 ```
-library(devtools)
-install_github("guillemylla/MirCureApp")
-```
-
-
-
-
-## Run MirCure
-
-- Launch MirCure user-graphic interface 
+docker run --rm -p 3838:3838 \
+ -v LOCAL_Genome_DIR:/srv/shiny-server/data/genomes \
+ -v LOCAL_BAMFILE_DIR:/srv/shiny-server/data/bamfiles \
+ -v LOCAL_DIR_TO_SAVE_MIRCUREREPORTS:/srv/shiny-server/reports\
+     conesalab/mircure
 
 ```
-library("MirCure")
-runMirCure()
-```
 
-- MirCure Inputs
-	1. Genome (fasta).
-	2. microRNA annotations to evaluate, in 3 gff files. One with the precursor cordinates, and two with the 2 miRNA arms (mature and star, or 3' and 5'). 
-	3. Small RNA-seq data mapped to the genome (bam)
-	
-	
-## Auxiliary scripts
- 
- - MiRbase_2_MirCure.R
- - mirDeep2_2_MirCure
+
+
+## Citation
+
+Ylla, G., Tianyuan, L., & Ana, C. (2020). MirCure: A tool for quality control, filter, and curation of microRNAs of animals and plants.
+
+
