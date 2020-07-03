@@ -1,10 +1,3 @@
----
-output:
-  pdf_document: default
-  word_document: default
-  html_document: default
----
-
 # MirCure: A tool for quality control, filter, and curation of microRNAs of animals and plants 
 
 MirCure is a computational application to assist on filtering and curating microRNA annotations obtained from databases or de novo miRNA annotation tools.
