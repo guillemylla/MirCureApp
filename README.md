@@ -2,7 +2,6 @@
 
 MirCure is a computational application to assist on filtering and curating microRNA annotations obtained from databases or de novo miRNA annotation tools.
 
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/guillemy/mircure)
 
 ## New repository
 
@@ -10,6 +9,7 @@ MirCure is officially mentained at: https://github.com/ConesaLab/MirCure
 
 
 ## Run MirCure from Docker
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/guillemy/mircure)
 
 ```
 docker run --rm -p 3838:3838 \
