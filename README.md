@@ -4,7 +4,7 @@ MirCure is a computational application to assist on filtering and curating micro
 
 
 ## New repository
-![DMaintained](https://img.shields.io/badge/Maintained at new repo:-ConesaLab_github-orange)
+![DMaintained](https://img.shields.io/badge/Maintained_at_new_repo:-ConesaLab_github-orange)
 
 MirCure is officially mentained at: https://github.com/ConesaLab/MirCure
 
