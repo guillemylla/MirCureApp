@@ -1,5 +1,5 @@
 # MirCure: A tool for quality control, filter, and curation of microRNAs of animals and plants 
-
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/guillemylla/MirCureApp?style=plastic)
 MirCure is a computational application to assist on filtering and curating microRNA annotations obtained from databases or de novo miRNA annotation tools.
 
 
