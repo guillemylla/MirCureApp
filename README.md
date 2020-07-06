@@ -4,13 +4,13 @@ MirCure is a computational application to assist on filtering and curating micro
 
 
 ## New repository
+![DMaintained](https://img.shields.io/badge/Maintained at new repo:- ConesaLab github - orange)
 
 MirCure is officially mentained at: https://github.com/ConesaLab/MirCure
 
 
 ## Run MirCure from Docker
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/guillemy/mircure)
-![DMaintained](https://img.shields.io/badge/Maintaeined-ConesaLab-orange)
 
 ```
 docker run --rm -p 3838:3838 \
